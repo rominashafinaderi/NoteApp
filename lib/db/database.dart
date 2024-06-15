@@ -16,7 +16,7 @@ class DbProvider {
   initDb() async {
     return await openDatabase(join(await getDatabasesPath(), 'note.db'),
         onCreate: (db, version) async {
-      var query = 'create table tbl_note(id Integer PRIMARY KEY AUTOINCREAMENT,'
+      var query = 'create table tbl_note(id Integer PRIMARY KEY AUTOINCREMENT,'
           'title varchar(100),description Text,dateNote Text ,timeNote Text )';
       db.execute(query);
     }, version: 1);
