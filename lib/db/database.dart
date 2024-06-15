@@ -15,12 +15,10 @@ class DbProvider {
   }
 
   Future<Database> initDb() async {
-    print("Initializing database...");
     String path = join(await getDatabasesPath(), 'note.db');
     return await openDatabase(path, version: 1, onCreate: (db, version) async {
-      print("Creating table...");
-      var query = 'create table tbl_note(id Integer PRIMARY KEY AUTOINCREMENT,'
-          'title varchar(100),description Text,dateNote Text ,timeNote Text )';
+      var query = 'CREATE TABLE tbl_note(id INTEGER PRIMARY KEY AUTOINCREMENT,'
+          'title VARCHAR(100), description TEXT, dateNote TEXT, timeNote TEXT)';
       await db.execute(query);
     });
   }
@@ -28,7 +26,7 @@ class DbProvider {
   Future<int> addNote(NoteModel note) async {
     final db = await database;
     int result = await db.rawInsert(
-        'insert into tbl_note(title,description,dateNote,timeNote) values(?,?,?,?)',
+        'INSERT INTO tbl_note (title, description, dateNote, timeNote) VALUES (?, ?, ?, ?)',
         [note.title, note.description, note.date, note.time]);
     return result;
   }

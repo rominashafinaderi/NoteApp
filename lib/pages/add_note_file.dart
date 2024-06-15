@@ -144,6 +144,14 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                       }
                     } catch (e) {
                       print("Error: $e");
+                      SnackBar errorSnackBar = SnackBar(
+                        content: Text(
+                          'خطا در ذخیره یادداشت',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Colors.red,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
                     }
                   },
                   child: Text(
