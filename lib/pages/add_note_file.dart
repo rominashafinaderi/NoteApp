@@ -32,7 +32,6 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         width: double.infinity,
         height: double.infinity - 60,
         child: Column(
-
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
@@ -66,8 +65,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                             print('change $date');
                           }, onConfirm: (date) {
                             print('confirm $date');
-                            this.dateNote =
-                                '${date.year}/  ${date.month}/${date.day}';
+                            setState(() {
+                              dateNote =
+                                  '${date.year}/  ${date.month}/${date.day}';
+                            });
                           },
                               currentTime: DateTime.now(),
                               locale: LocaleType.fa);
@@ -85,6 +86,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                                   date.timeZoneOffset.inHours.toString());
                             }, onConfirm: (date) {
                               print('confirm $date');
+                              setState(() {
+                                timeNote = '${date.hour}:${date.minute}';
+                              });
                             }, currentTime: DateTime.now());
                           })
                     ],
@@ -97,31 +101,49 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () async {
-                    NoteModel note = NoteModel(
-                        title: title,
-                        description: description,
-                        date: dateNote,
-                        time: timeNote);
-                    int result = await DbProvider.db.addNote(note);
-                    if (result > 0) {
-                      print("erorrr");
-                      SnackBar snackBar = SnackBar(
-                        content: Text(
-                          'یادداشت با موفقیت افزوده شد',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.green,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    } else {
-                      SnackBar snackBar2 = SnackBar(
-                        content: Text(
-                          'یادداشت افزوده نشد!!',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.red,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+                    print("Save button pressed");
+                    try {
+                      if (title.isNotEmpty &&
+                          description.isNotEmpty &&
+                          dateNote.isNotEmpty &&
+                          timeNote.isNotEmpty) {
+                        NoteModel note = NoteModel(
+                            title: title,
+                            description: description,
+                            date: dateNote,
+                            time: timeNote);
+                        int result = await DbProvider.db.addNote(note);
+                        if (result > 0) {
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                              'یادداشت با موفقیت افزوده شد',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.green,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } else {
+                          SnackBar snackBar2 = SnackBar(
+                            content: Text(
+                              'یادداشت افزوده نشد!!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.red,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+                        }
+                      } else {
+                        SnackBar snackBar3 = SnackBar(
+                          content: Text(
+                            'لطفا تمامی فیلدها را پر کنید',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.orange,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar3);
+                      }
+                    } catch (e) {
+                      print("Error: $e");
                     }
                   },
                   child: Text(
