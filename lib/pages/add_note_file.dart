@@ -1,6 +1,7 @@
 import 'package:first/db/database.dart';
 import 'package:first/models/note_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 class AddNoteScreen extends StatefulWidget {
   const AddNoteScreen({super.key});
@@ -12,8 +13,8 @@ class AddNoteScreen extends StatefulWidget {
 class _AddNoteScreenState extends State<AddNoteScreen> {
   String title = '';
   String description = '';
-  String date = '';
-  String time = '';
+  String dateNote = '';
+  String timeNote = '';
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         width: double.infinity,
         height: double.infinity - 60,
         child: Column(
+
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
@@ -54,11 +56,37 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Button(title: 'تاریخ', onPressed: () {}),
+                      Button(
+                        title: 'تاریخ',
+                        onPressed: () {
+                          DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              minTime: DateTime(2023, 6, 5),
+                              maxTime: DateTime(2099, 6, 7), onChanged: (date) {
+                            print('change $date');
+                          }, onConfirm: (date) {
+                            print('confirm $date');
+                            this.dateNote =
+                                '${date.year}/  ${date.month}/${date.day}';
+                          },
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.fa);
+                        },
+                      ),
                       SizedBox(
                         width: 20,
                       ),
-                      Button(title: 'زمان', onPressed: () {})
+                      Button(
+                          title: 'زمان',
+                          onPressed: () {
+                            DatePicker.showTimePicker(context,
+                                showTitleActions: true, onChanged: (date) {
+                              print('change $date in time zone ' +
+                                  date.timeZoneOffset.inHours.toString());
+                            }, onConfirm: (date) {
+                              print('confirm $date');
+                            }, currentTime: DateTime.now());
+                          })
                     ],
                   ),
                 ],
@@ -72,8 +100,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                     NoteModel note = NoteModel(
                         title: title,
                         description: description,
-                        date: date,
-                        time: time);
+                        date: dateNote,
+                        time: timeNote);
                     int result = await DbProvider.db.addNote(note);
                     if (result > 0) {
                       print("erorrr");
