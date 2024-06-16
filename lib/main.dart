@@ -1,10 +1,21 @@
-import 'package:first/pages/add_note_file.dart';
+import 'package:first/db/database.dart';
+import 'package:first/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dbProvider = DbProvider.db;
+  String path = join(await getDatabasesPath(), 'note.db');
+  await deleteDatabase(path);
+
+  // Initialize the database and test the table
+  await dbProvider.database;
+  await dbProvider.testTable();
+
+  runApp(MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -12,13 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const AddNoteScreen(),
+      home: const HomePage(),
     );
   }
 }

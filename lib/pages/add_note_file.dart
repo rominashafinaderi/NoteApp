@@ -35,6 +35,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
+              margin: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -45,6 +46,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           title = value;
                         });
                       }),
+                  SizedBox(
+                    height: 30,
+                  ),
                   itemBoxWithTitle(
                       title: 'توضیحات یادداشت',
                       onChanged: (value) {
@@ -52,6 +56,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           description = value;
                         });
                       }),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -114,44 +121,22 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                             time: timeNote);
                         int result = await DbProvider.db.addNote(note);
                         if (result > 0) {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'یادداشت با موفقیت افزوده شد',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.green,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              ShowSnackBar(
+                                  'یادداشت با موفقیت افزوده شد', Colors.green));
                         } else {
-                          SnackBar snackBar2 = SnackBar(
-                            content: Text(
-                              'یادداشت افزوده نشد!!',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.red,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              ShowSnackBar('یادداشت افزوده نشد!!', Colors.red));
                         }
                       } else {
-                        SnackBar snackBar3 = SnackBar(
-                          content: Text(
-                            'لطفا تمامی فیلدها را پر کنید',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: Colors.orange,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar3);
+                        ScaffoldMessenger.of(context).showSnackBar(ShowSnackBar(
+                            'لطفا تمامی فیلدها را پر کنید', Colors.orange));
                       }
                     } catch (e) {
                       print("Error: $e");
-                      SnackBar errorSnackBar = SnackBar(
-                        content: Text(
-                          'خطا در ذخیره یادداشت',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.red,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          ShowSnackBar('خطا در ذخیره یادداشت', Colors.red));
                     }
                   },
                   child: Text(
@@ -168,39 +153,45 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       ),
     );
   }
+}
 
-  Widget itemBoxWithTitle(
-      {required String title, required ValueChanged<String>? onChanged}) {
-    return Column(
-      children: [
-        Container(
-            margin: EdgeInsets.all(20),
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 14, color: Colors.black),
-            )),
-        Container(
-          margin: EdgeInsets.all(20),
-          child: TextField(
-            decoration: InputDecoration(border: OutlineInputBorder()),
-            onChanged: onChanged,
-          ),
+SnackBar ShowSnackBar(String text, Color color) {
+  return SnackBar(
+    content: Text(
+      text,
+      style: TextStyle(color: Colors.white),
+    ),
+    backgroundColor: color,
+  );
+}
+
+Widget Button({required String title, required VoidCallback onPressed}) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    child: Text(
+      title,
+      style: TextStyle(color: Colors.white),
+    ),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.green,
+      fixedSize: Size(100, 40),
+    ),
+  );
+}
+
+Widget itemBoxWithTitle(
+    {required String title, required Function(String) onChanged}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: [
+      Text(title),
+      TextField(
+        onChanged: onChanged,
+        textAlign: TextAlign.right,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
         ),
-      ],
-    );
-  }
-
-  Widget Button({required VoidCallback? onPressed, required String title}) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Text(
-        title,
-        style: TextStyle(color: Colors.white),
       ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        fixedSize: Size(100, 40),
-      ),
-    );
-  }
+    ],
+  );
 }
