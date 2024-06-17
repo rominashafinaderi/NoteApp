@@ -126,11 +126,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                                   'یادداشت با موفقیت افزوده شد', Colors.green));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              ShowSnackBar('یادداشت افزوده نشد!!', Colors.red));
+                              ShowSnackBar('یادداشت افزوده نشد!!', Colors.orange));
                         }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(ShowSnackBar(
-                            'لطفا تمامی فیلدها را پر کنید', Colors.orange));
                       }
                     } catch (e) {
                       print("Error: $e");
